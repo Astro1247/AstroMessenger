@@ -51,8 +51,8 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(8880, () => {
-  console.log('listening on *:8880');
+server.listen(8443, () => {
+  console.log('listening on *:8443');
 });
 
 // error handler
