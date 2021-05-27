@@ -14,13 +14,15 @@
     #messages > li { padding: 0.5rem 1rem; }
     #messages > li:nth-child(odd) { background: #efefef; }
   </style>
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js" charset="utf-8"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 <ul id="messages"></ul>
 <form id="form" action="">
+  <p id="nickname"></p>
   <input id="input" autocomplete="off" /><button>Send</button>
 </form>
-<script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
 
@@ -42,6 +44,12 @@
     messages.appendChild(item);
     window.scrollTo(0, document.body.scrollHeight);
   });
+
+  socket.on('username', function(userName) {
+    console.log('You\'r username is => ' + userName);
+    $('#nickname').text('Your username: ' + userName);
+  });
+
 </script>
 </body>
 </html>

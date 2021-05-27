@@ -7,8 +7,23 @@ var app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true // needed for cookie-based sticky sessions, else you can ignore this line
+  }
+});
+
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: "admin",
+    password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS" // "changeit" encrypted with bcrypt
+  },
+});
+
 var indexRouter = require('./routes/index');
 
 var usersRouter = require('./routes/users');
@@ -41,18 +56,20 @@ io.on('connection', (socket) => {
   let clientIp = sHeaders['x-forwarded-for']; //socket.request.connection.remoteAddress.match(r)[0];
   let avatarUrl = `https://avatars.dicebear.com/api/male/${clientIp}.svg`;
   let lastMessage = Date.now();
-  console.log('a user connected ' + socketId + ' - ' + clientIp);
-  socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users in chat: ' + usersCounter);
+  let nickname = 'U' + (socket.id).toString().substr(1,4);
+  socket.emit('username', nickname);
+  console.log('a user connected ' + socketId + ' - ' + clientIp + ` - ${nickname}`);
+  socket.broadcast.emit('chat message', 'User ' + nickname + ' joined chat! Users in chat: ' + usersCounter);
   socket.on('disconnect', () => {
     usersCounter -= 1;
-    socket.broadcast.emit('chat message', 'User ' + clientIp + ' left chat! Users in chat: ' + usersCounter);
-    console.log('user disconnected ' + socketId + ' - ' + clientIp);
+    socket.broadcast.emit('chat message', 'User ' + nickname + ' left chat! Users in chat: ' + usersCounter);
+    console.log('user disconnected ' + socketId + ' - ' + clientIp + ` - ${nickname}`);
   });
   socket.on('chat message', (msg) => {
     if(Date.now() - lastMessage < 300) {
       socket.emit('chat message', 'You are messaging too fast! Keep calm.');
     } else {
-      io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg.replace(/(<([^>]+)>)/gi, ""));
+      io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + nickname + ': ' + msg.replace(/(<([^>]+)>)/gi, ""));
     }
     lastMessage = Date.now();
   });
