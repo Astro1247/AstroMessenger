@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
-    io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg);
+    io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg.replace(/(<([^>]+)>)/gi, ""));
   });
 });
 
