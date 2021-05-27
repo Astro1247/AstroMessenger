@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
   usersCounter += 1;
   let socketId = socket.id;
   let clientIp = socket.request.connection.remoteAddress.match(r)[0];
+  let avatarUrl = `https://avatars.dicebear.com/api/male/${clientIp}.svg`;
   console.log('a user connected ' + socketId + ' - ' + clientIp);
   socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users in chat: ' + usersCounter);
   socket.on('disconnect', () => {
@@ -46,12 +47,12 @@ io.on('connection', (socket) => {
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
-    io.emit('chat message', clientIp + ': ' + msg);
+    io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg);
   });
 });
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+server.listen(8880, () => {
+  console.log('listening on *:8880');
 });
 
 // error handler
