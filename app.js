@@ -32,15 +32,17 @@ app.use(function(req, res, next) {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  let socketId = socket.id;
+  let clientIp = socket.request.connection.remoteAddress;
+  console.log('a user connected ' + socketId + ' - ' + clientIp);
   io.on('connection', (socket) => {
-    socket.broadcast.emit('Hello!');
+    socket.broadcast.emit('chat message', 'Hello, ' + clientIp + '!');
   });
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+    io.emit('chat message', clientIp + ': ' + msg);
   });
 });
 
