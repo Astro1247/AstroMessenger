@@ -40,8 +40,8 @@ io.on('connection', (socket) => {
   let clientIp = socket.request.connection.remoteAddress.match(r)[0];
   let avatarUrl = `https://avatars.dicebear.com/api/male/${clientIp}.svg`;
   let lastMessage = Date.now();
-  var sHeaders = socket.handshake.headers;
-  socket.broadcast.emit('[%s:%s] CONNECT', sHeaders['x-forwarded-for'], sHeaders['x-forwarded-port']);
+  let sHeaders = socket.handshake.headers;
+  console.log('[%s:%s] CONNECT', sHeaders['x-forwarded-for'], sHeaders['x-forwarded-port']);
   console.log('a user connected ' + socketId + ' - ' + clientIp);
   socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users in chat: ' + usersCounter);
   socket.on('disconnect', () => {
