@@ -39,10 +39,10 @@ io.on('connection', (socket) => {
   let socketId = socket.id;
   let clientIp = socket.request.connection.remoteAddress.match(r)[0];
   console.log('a user connected ' + socketId + ' - ' + clientIp);
-  socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users left in chat: ' + usersCounter);
+  socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users in chat: ' + usersCounter);
   socket.on('disconnect', () => {
     usersCounter -= 1;
-    socket.broadcast.emit('chat message', 'User ' + clientIp + ' left chat! Users left in chat: ' + usersCounter);
+    socket.broadcast.emit('chat message', 'User ' + clientIp + ' left chat! Users in chat: ' + usersCounter);
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
