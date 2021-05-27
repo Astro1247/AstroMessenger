@@ -36,11 +36,11 @@ let usersCounter = 0;
 
 io.on('connection', (socket) => {
   usersCounter += 1;
+  let sHeaders = socket.handshake.headers;
   let socketId = socket.id;
   let clientIp = sHeaders['x-forwarded-for']; //socket.request.connection.remoteAddress.match(r)[0];
   let avatarUrl = `https://avatars.dicebear.com/api/male/${clientIp}.svg`;
   let lastMessage = Date.now();
-  let sHeaders = socket.handshake.headers;
   console.log('a user connected ' + socketId + ' - ' + clientIp);
   socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users in chat: ' + usersCounter);
   socket.on('disconnect', () => {
