@@ -31,9 +31,11 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+let r = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+
 io.on('connection', (socket) => {
   let socketId = socket.id;
-  let clientIp = socket.request.connection.remoteAddress;
+  let clientIp = socket.request.connection.remoteAddress.match(r)[0];
   console.log('a user connected ' + socketId + ' - ' + clientIp);
   io.on('connection', (socket) => {
     socket.broadcast.emit('chat message', 'Hello, ' + clientIp + '!');
