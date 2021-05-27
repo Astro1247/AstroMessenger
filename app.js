@@ -49,10 +49,10 @@ io.on('connection', (socket) => {
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
+    lastMessage = Date.now();
     if(Date.now() - lastMessage < 300) {
       socket.emit('chat message', 'You are messaging too fast! Keep calm.');
     } else {
-      lastMessage = Date.now();
       io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg.replace(/(<([^>]+)>)/gi, ""));
     }
   });
