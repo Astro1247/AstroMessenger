@@ -7,23 +7,8 @@ var app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const { instrument } = require("@socket.io/admin-ui");
 
-const io = new Server(server, {
-  cors: {
-    origin: ["https://admin.socket.io"],
-    credentials: true // needed for cookie-based sticky sessions, else you can ignore this line
-  }
-});
-
-instrument(io, {
-  auth: {
-    type: "basic",
-    username: "admin",
-    password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS" // "changeit" encrypted with bcrypt
-  },
-});
-
+const io = new Server(server);
 var indexRouter = require('./routes/index');
 
 var usersRouter = require('./routes/users');
