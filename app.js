@@ -38,10 +38,10 @@ io.on('connection', (socket) => {
   let clientIp = socket.request.connection.remoteAddress.match(r)[0];
   console.log('a user connected ' + socketId + ' - ' + clientIp);
   io.on('connection', (socket) => {
-    socket.broadcast.emit('chat message', 'User , ' + clientIp + ' joined chat!');
+    socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat!');
   });
   socket.on('disconnect', () => {
-    socket.broadcast.emit('chat message', 'User , ' + clientIp + ' left chat!');
+    socket.broadcast.emit('chat message', 'User ' + clientIp + ' left chat!');
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
