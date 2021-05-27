@@ -39,6 +39,7 @@ io.on('connection', (socket) => {
   let socketId = socket.id;
   let clientIp = socket.request.connection.remoteAddress.match(r)[0];
   let avatarUrl = `https://avatars.dicebear.com/api/male/${clientIp}.svg`;
+  let lastMessage = Date.now();
   console.log('a user connected ' + socketId + ' - ' + clientIp);
   socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users in chat: ' + usersCounter);
   socket.on('disconnect', () => {
@@ -47,7 +48,12 @@ io.on('connection', (socket) => {
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
-    io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg.replace(/(<([^>]+)>)/gi, ""));
+    if(Date.now() - lastMessage < 300) {
+      socket.emit('chat message', 'You are messaging too fast! Keep calm.');
+    } else {
+      lastMessage = Date.now();
+      io.emit('chat message', `<img src="${avatarUrl}" style="max-width: 30px;">` + clientIp + ': ' + msg.replace(/(<([^>]+)>)/gi, ""));
+    }
   });
 });
 
