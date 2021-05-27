@@ -32,16 +32,17 @@ app.use(function(req, res, next) {
 });
 
 let r = /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/;
+let usersCounter = 0;
 
 io.on('connection', (socket) => {
+  usersCounter += 1;
   let socketId = socket.id;
   let clientIp = socket.request.connection.remoteAddress.match(r)[0];
   console.log('a user connected ' + socketId + ' - ' + clientIp);
-  io.on('connection', (socket) => {
-    socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat!');
-  });
+  socket.broadcast.emit('chat message', 'User ' + clientIp + ' joined chat! Users left in chat: ' + usersCounter);
   socket.on('disconnect', () => {
-    socket.broadcast.emit('chat message', 'User ' + clientIp + ' left chat!');
+    usersCounter -= 1;
+    socket.broadcast.emit('chat message', 'User ' + clientIp + ' left chat! Users left in chat: ' + usersCounter);
     console.log('user disconnected ' + socketId + ' - ' + clientIp);
   });
   socket.on('chat message', (msg) => {
